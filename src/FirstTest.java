@@ -10,7 +10,9 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.PrintStream;
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
@@ -155,6 +157,42 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testClearSearch()
+    {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia'",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                "Beethoven",
+                "Cannot find search input",
+                5
+        );
+
+        waitForAllElementsPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_container']//*[@resource-id='org.wikipedia:id/page_list_item_title']"),
+                "Cannot find search results",
+                15
+        );
+
+        waitForElementAndClear(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Cannot find search field",
+                5
+        );
+
+        waitForElementNotPresent(
+                By.id("org.wikipedia:id/search_results_container"),
+                "Element is still present",
+                15
+        );
+
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
@@ -167,6 +205,15 @@ public class FirstTest {
     private WebElement waitForElementPresent(By by, String error_message)
     {
         return waitForElementPresent(by,error_message,5);
+    }
+
+    private List<WebElement> waitForAllElementsPresent(By by, String error_message, long timeoutInSeconds)
+    {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
+        wait.withMessage(error_message + "\n");
+        return wait.until(
+                ExpectedConditions.presenceOfAllElementsLocatedBy(by)
+        );
     }
 
     private WebElement waitForElementAndClick(By by, String error_message, long timeoutInSeconds){
