@@ -131,6 +131,30 @@ public class FirstTest {
         );
     }
 
+    @Test
+    public void testSearchBarPlaceholder()
+    {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia'",
+                5
+        );
+
+        WebElement search_field = waitForElementPresent(
+                By.id("org.wikipedia:id/search_src_text"),
+                "Cannot find search field",
+                10
+        );
+
+        String search_bar_text = search_field.getAttribute("text");
+
+        Assert.assertEquals(
+                "We see unexpected text",
+                "Search…",
+                search_bar_text
+        );
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
