@@ -193,6 +193,39 @@ public class FirstTest {
 
     }
 
+    @Test
+    public void testSearchResultsContainText()
+    {
+        waitForElementAndClick(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia'",
+                5
+        );
+
+        waitForElementAndSendKeys(
+                By.xpath("//*[contains(@text, 'Search…')]"),
+                "Beethoven",
+                "Cannot find search input",
+                5
+        );
+
+        List<WebElement> results = waitForAllElementsPresent(
+                By.xpath("//*[@resource-id='org.wikipedia:id/search_results_container']//*[@resource-id='org.wikipedia:id/page_list_item_title']"),
+                "Cannot find search results",
+                15
+        );
+
+        for(WebElement result : results) {
+            String text = result.getAttribute("text");
+            boolean text_found = text.contains("Beethoven");
+            Assert.assertTrue(
+                    "Result doesn't match the request",
+                    text_found
+            );
+        }
+
+    }
+
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
     {
         WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
