@@ -36,6 +36,7 @@ public class FirstTest {
     @After
     public void tearDown()
     {
+        driver.rotate(ScreenOrientation.PORTRAIT);
         driver.quit();
     }
 
@@ -690,6 +691,17 @@ public class FirstTest {
                 " Can't find page title"
         );
 
+    }
+
+    @Test
+    public void testDeviceRotate()
+    {
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+
+        assertElementPresent(
+                By.id("org.wikipedia:id/search_container"),
+                "Cannot find 'Search Wikipedia'"
+        );
     }
 
     private WebElement waitForElementPresent(By by, String error_message, long timeoutInSeconds)
