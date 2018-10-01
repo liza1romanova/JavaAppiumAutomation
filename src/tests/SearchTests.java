@@ -100,4 +100,20 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.waitForEmptyResultsLabel();
         SearchPageObject.assertThereIsNoResultOfSearch();
     }
+
+    @Test
+    public void testResultByTitleAndDescription()
+    {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSeachInput();
+        String search_line = "Python";
+        SearchPageObject.typeSearchLine(search_line);
+        int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
+        assertTrue(
+                "We found less than 3 search results",
+                amount_of_search_results > 3
+        );
+        SearchPageObject.waitForElementByTitleAndDescription("Python (programming language)","General-purpose, high-level programming language");
+
+    }
 }
