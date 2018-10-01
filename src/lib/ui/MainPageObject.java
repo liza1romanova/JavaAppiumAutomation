@@ -144,38 +144,11 @@ public class MainPageObject {
         }
     }
 
-    public String waitforElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds)
-    {
-        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
-        return element.getAttribute(attribute);
-    }
-
-    public void openFirstArtickeBySearch(String search_request)
-    {
-        waitForElementAndClick(
-                By.id("org.wikipedia:id/search_container"),
-                "Cannot find 'Search Wikipedia'",
-                5
-        );
-        waitForElementAndSendKeys(
-                By.xpath("//*[contains(@text, 'Search…')]"),
-                search_request,
-                "Cannot find search input",
-                5
-        );
-
-        waitForElementAndClick(
-                By.xpath("//*[@resource-id='org.wikipedia:id/page_list_item_container'][@index=0]"),
-                "Cannot find topic searching by " + search_request,
-                15
-        );
-
-        waitForElementPresent(
-                By.id("org.wikipedia:id/view_page_title_text"),
-                "Cannot find page title",
-                15
-        );
-    }
+//    public String waitforElementAndGetAttribute(By by, String attribute, String error_message, long timeoutInSeconds)
+//    {
+//        WebElement element = waitForElementPresent(by, error_message, timeoutInSeconds);
+//        return element.getAttribute(attribute);
+//    }
 
     public void assertElementPresent(By by, String error_message)
     {

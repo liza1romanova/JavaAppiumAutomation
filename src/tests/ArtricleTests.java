@@ -39,4 +39,17 @@ public class ArtricleTests extends CoreTestCase
         ArticlePageObject.waitForTitleElement();
         ArticlePageObject.swipeToFooter();
     }
+
+    @Test
+    public void testAssertTitle() throws InterruptedException {
+        SearchPageObject SearchPageObject = new SearchPageObject(driver);
+        SearchPageObject.initSeachInput();
+        SearchPageObject.typeSearchLine("Java");
+        SearchPageObject.clickByArticleWithSubstring("Object-oriented programming language");
+
+        Thread.sleep(5000);
+
+        ArticlePageObject ArticlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject.assertArticleTitle();
+    }
 }

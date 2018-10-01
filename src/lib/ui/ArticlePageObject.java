@@ -1,6 +1,7 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -14,14 +15,20 @@ public class ArticlePageObject extends MainPageObject {
         ADD_TO_MY_LIST_OVERLAY = "org.wikipedia:id/onboarding_button",
         MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
         MY_LIST_OK_BUTTON = "//android.widget.Button[@text='OK']",
+        EXISTING_LIST_TPL = "//*[@resource-id='org.wikipedia:id/list_of_lists']//*[@text='{SUBSTRING}']",
         CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']";
-
-
 
     public ArticlePageObject(AppiumDriver driver)
     {
         super(driver);
     }
+
+    /* TEMPLATES METHODS */
+    private static String getExistingListXpath(String list_name)
+    {
+        return EXISTING_LIST_TPL.replace("{SUBSTRING}", list_name);
+    }
+    /* TEMPLATES METHODS */
 
     public WebElement waitForTitleElement()
     {
@@ -34,6 +41,11 @@ public class ArticlePageObject extends MainPageObject {
         return title_element.getAttribute("text");
     }
 
+    public void assertArticleTitle()
+    {
+        this.assertElementPresent(By.id(TITLE),"Cannot find article title on page");
+    }
+
     public void swipeToFooter()
     {
         this.swipeUpToFindElement(
@@ -43,7 +55,7 @@ public class ArticlePageObject extends MainPageObject {
         );
     }
 
-    public void addArticleToMyList(String name_of_folder)
+    public void addArticleToNewList(String name_of_folder)
     {
         this.waitForElementAndClick(
                 By.xpath(OPTIONS_BUTTON),
@@ -80,6 +92,28 @@ public class ArticlePageObject extends MainPageObject {
                 By.xpath(MY_LIST_OK_BUTTON),
                 "Can't press OK button",
                 10
+        );
+    }
+
+    public void addArticleToExistingList(String list_name) throws InterruptedException {
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_BUTTON),
+                "Can't find article to open article options",
+                5
+        );
+
+        Thread.sleep(10000);
+
+        this.waitForElementAndClick(
+                By.xpath(OPTIONS_ADD_TO_MY_LIST_BUTTON),
+                "Cannot find option to add article to reading list",
+                5
+        );
+
+        this.waitForElementAndClick(
+                By.xpath(getExistingListXpath(list_name)),
+                "Cannot find saved list " + list_name + " to add the article",
+                15
         );
     }
 
