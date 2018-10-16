@@ -1,22 +1,20 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.junit.Test;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 public class ArticlePageObject extends MainPageObject {
 
     private static final String
-        TITLE = "org.wikipedia:id/view_page_title_text",
-        FOOTER_ELEMENT = "//*[@text, 'View page in browser']",
-        OPTIONS_BUTTON = "//android.widget.ImageView[@content-desc='More options']",
-        OPTIONS_ADD_TO_MY_LIST_BUTTON = "//*[@text='Add to reading list']",
-        ADD_TO_MY_LIST_OVERLAY = "org.wikipedia:id/onboarding_button",
-        MY_LIST_NAME_INPUT = "org.wikipedia:id/text_input",
-        MY_LIST_OK_BUTTON = "//android.widget.Button[@text='OK']",
-        EXISTING_LIST_TPL = "//*[@resource-id='org.wikipedia:id/list_of_lists']//*[@text='{SUBSTRING}']",
-        CLOSE_ARTICLE_BUTTON = "//android.widget.ImageButton[@content-desc='Navigate up']";
+        TITLE = "id:org.wikipedia:id/view_page_title_text",
+        FOOTER_ELEMENT = "xpath://*[@text, 'View page in browser']",
+        OPTIONS_BUTTON = "xpath://android.widget.ImageView[@content-desc='More options']",
+        OPTIONS_ADD_TO_MY_LIST_BUTTON = "xpath://*[@text='Add to reading list']",
+        ADD_TO_MY_LIST_OVERLAY = "id:org.wikipedia:id/onboarding_button",
+        MY_LIST_NAME_INPUT = "id:org.wikipedia:id/text_input",
+        MY_LIST_OK_BUTTON = "xpath://android.widget.Button[@text='OK']",
+        EXISTING_LIST_TPL = "xpath://*[@resource-id='org.wikipedia:id/list_of_lists']//*[@text='{SUBSTRING}']",
+        CLOSE_ARTICLE_BUTTON = "xpath://android.widget.ImageButton[@content-desc='Navigate up']";
 
     public ArticlePageObject(AppiumDriver driver)
     {
@@ -32,7 +30,7 @@ public class ArticlePageObject extends MainPageObject {
 
     public WebElement waitForTitleElement()
     {
-        return this.waitForElementPresent(By.id(TITLE), "Cannot find article title on page", 20);
+        return this.waitForElementPresent(TITLE, "Cannot find article title on page", 20);
     }
 
     public String getArticleTitle()
@@ -43,13 +41,13 @@ public class ArticlePageObject extends MainPageObject {
 
     public void assertArticleTitle()
     {
-        this.assertElementPresent(By.id(TITLE),"Cannot find article title on page");
+        this.assertElementPresent(TITLE,"Cannot find article title on page");
     }
 
     public void swipeToFooter()
     {
         this.swipeUpToFindElement(
-                By.xpath(FOOTER_ELEMENT),
+                FOOTER_ELEMENT,
                 "Cannot find the end of Article",
                 20
         );
@@ -58,38 +56,38 @@ public class ArticlePageObject extends MainPageObject {
     public void addArticleToNewList(String name_of_folder)
     {
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_BUTTON),
+                OPTIONS_BUTTON,
                 "Can't find article to open article options",
                 5
         );
 
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_ADD_TO_MY_LIST_BUTTON),
+                OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find option to add article to reading list",
                 5
         );
 
         this.waitForElementAndClick(
-                By.id(ADD_TO_MY_LIST_OVERLAY),
+                ADD_TO_MY_LIST_OVERLAY,
                 "Cannot find 'Got it' tip overlay",
                 5
         );
 
         this.waitForElementAndClear(
-                By.id(MY_LIST_NAME_INPUT),
+                MY_LIST_NAME_INPUT,
                 "Can't find input field to set articles folder",
                 5
         );
 
         this.waitForElementAndSendKeys(
-                By.id(MY_LIST_NAME_INPUT),
+                MY_LIST_NAME_INPUT,
                 name_of_folder,
                 "Cannot put text into articles field input",
                 5
         );
 
         this.waitForElementAndClick(
-                By.xpath(MY_LIST_OK_BUTTON),
+                MY_LIST_OK_BUTTON,
                 "Can't press OK button",
                 10
         );
@@ -97,7 +95,7 @@ public class ArticlePageObject extends MainPageObject {
 
     public void addArticleToExistingList(String list_name) throws InterruptedException {
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_BUTTON),
+                OPTIONS_BUTTON,
                 "Can't find article to open article options",
                 5
         );
@@ -105,22 +103,23 @@ public class ArticlePageObject extends MainPageObject {
         Thread.sleep(10000);
 
         this.waitForElementAndClick(
-                By.xpath(OPTIONS_ADD_TO_MY_LIST_BUTTON),
+                OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find option to add article to reading list",
                 5
         );
 
+        String element = getExistingListXpath(list_name);
+
         this.waitForElementAndClick(
-                By.xpath(getExistingListXpath(list_name)),
+                element,
                 "Cannot find saved list " + list_name + " to add the article",
-                15
-        );
+                15);
     }
 
     public void closeArticle()
     {
         this.waitForElementAndClick(
-                By.xpath(CLOSE_ARTICLE_BUTTON),
+                CLOSE_ARTICLE_BUTTON,
                 "Can't close article, can't find X button",
                 10
         );
