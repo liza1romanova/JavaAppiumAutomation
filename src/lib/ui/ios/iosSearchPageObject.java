@@ -1,25 +1,24 @@
-package lib.ui;
+package lib.ui.ios;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
+import lib.ui.MainPageObject;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
-public class SearchPageObject extends MainPageObject{
+public class iosSearchPageObject extends MainPageObject {
 
     private static final String
-            SEARCH_INIT_ELEMENT = "xpath://*[contains(@text, 'Search Wikipedia')]",
-            SEARCH_INPUT = "xpath://*[contains(@text, 'Search…')]",
-            SEARCH_INPUT_FIELD = "id:org.wikipedia:id/search_src_text",
-            SEARCH_CANCEL_BUTTON = "id:org.wikipedia:id/search_close_btn",
-            SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_container']//*[@text='{SUBSTRING}']",
-            SEARCH_RESULT_ELEMENT = "xpath://*[@resource-id='org.wikipedia:id/search_results_list']/*[@resource-id='org.wikipedia:id/page_list_item_container']",
+            SEARCH_INIT_ELEMENT = "xpath://*[contains(@name,'Search Wikipedia')]",
+            SEARCH_INPUT = "xpath://XCUIElementTypeApplication[@name='Wikipedia']/XCUIElementTypeWindow[1]/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeOther[1]/XCUIElementTypeSearchField",
+            SEARCH_CANCEL_BUTTON = "id:Close",
+            SEARCH_RESULT_BY_SUBSTRING_TPL = "xpath://XCUIElementTypeApplication[@name=\"Wikipedia\"]/XCUIElementTypeWindow[1]/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeOther[2]/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeCollectionView/XCUIElementTypeCell/*[contains(@name,'{SUBSTRING}')]",
+            SEARCH_RESULT_ELEMENT = "xpath:////XCUIElementTypeApplication[@name='Wikipedia']/XCUIElementTypeWindow[1]/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeOther[3]/XCUIElementTypeOther[2]/XCUIElementTypeOther/XCUIElementTypeCollectionView/XCUIElementTypeCell",
             SEARCH_RESULT_TITLE = "xpath://*[@resource-id='org.wikipedia:id/search_results_container']//*[@resource-id='org.wikipedia:id/page_list_item_title']",
             SEARCH_EMPTY_RESULT_ELEMENT = "xpath://*[@text='No results found']",
             SEARCH_RESULT_BY_TITLE_AND_DESC_TPL = "xpath://*[@resource-id='org.wikipedia:id/page_list_item_container']/*[./*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{SUBSTRING_TITLE}'] and ./*[@resource-id='org.wikipedia:id/page_list_item_description' and @text='{SUBSTRING_DESCRIPTION}']]";
 
-    public SearchPageObject (AppiumDriver driver)
+    public iosSearchPageObject (AppiumDriver driver)
     {
         super(driver);
     }
@@ -36,16 +35,25 @@ public class SearchPageObject extends MainPageObject{
     }
     /* TEMPLATES METHODS */
 
-    public void initSeachInput()
+    public void initSearchInput()
     {
-        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find and click search init element",5);
-        this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element");
+        this.waitForElementAndClick(SEARCH_INIT_ELEMENT, "Cannot find and click search init element",10);
+        this.waitForElementPresent(SEARCH_INPUT, "Cannot find search input after clicking search init element",10);
 
+    }
+
+    public void clearSearchInput()
+    {
+        this.waitForElementAndClear(
+                SEARCH_INPUT,
+                "Cannot find input field",
+                5
+        );
     }
 
     public WebElement waitForSearchField()
     {
-        return this.waitForElementPresent(SEARCH_INPUT_FIELD, "Cannot find input field");
+        return this.waitForElementPresent(SEARCH_INPUT, "Cannot find input field");
     }
 
     public String getInputFieldText()
@@ -80,10 +88,9 @@ public class SearchPageObject extends MainPageObject{
         this.waitForElementAndClick(SEARCH_CANCEL_BUTTON, "Cannot find Search Cancel button", 5);
     }
 
-    public void clickByArticleWithSubstring(String substring)
-    {
-        String search_result_xpath = getResultSearchElement(substring);
-        this.waitForElementAndClick(search_result_xpath, "Cannot find and click search result with substring " + substring, 20);
+    public void clickByArticleWithSubstring(String substring) throws InterruptedException {
+        this.waitForElementAndClick(getResultSearchElement(substring), "Cannot find and click search result with substring ", 20);
+        Thread.sleep(700);
     }
 
     public int getAmountOfFoundArticles()
