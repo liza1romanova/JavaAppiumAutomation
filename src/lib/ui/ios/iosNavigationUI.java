@@ -2,11 +2,13 @@ package lib.ui.ios;
 
 import io.appium.java_client.AppiumDriver;
 import lib.ui.MainPageObject;
+import lib.ui.NavigationUI;
 
-public class iosNavigationUI extends MainPageObject{
+public class iosNavigationUI extends NavigationUI {
 
-    private static final String
+    static {
         MY_LISTS_LINK = "xpath://XCUIElementTypeButton[@name=\"Saved\"]";
+    }
 
     public iosNavigationUI(AppiumDriver driver)
     {

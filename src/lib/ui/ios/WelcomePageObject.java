@@ -49,7 +49,8 @@ public class WelcomePageObject extends MainPageObject
         this.waitForElementAndClick(GET_STARTED_BUTTON, "Cannot find and click 'Get started' button", 10);
     }
 
-    public void clickSkipbutton(){
+    public void clickSkipButton(){
         this.waitForElementAndClick(SKIP_BUTTON, "Cannot find and click 'Skip' button",10);
     }
+
 }

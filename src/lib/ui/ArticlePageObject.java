@@ -1,20 +1,22 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
 import org.openqa.selenium.WebElement;
 
-public class ArticlePageObject extends MainPageObject {
-
-    private static final String
-        TITLE = "id:org.wikipedia:id/view_page_title_text",
-        FOOTER_ELEMENT = "xpath://*[@text, 'View page in browser']",
-        OPTIONS_BUTTON = "xpath://android.widget.ImageView[@content-desc='More options']",
-        OPTIONS_ADD_TO_MY_LIST_BUTTON = "xpath://*[@text='Add to reading list']",
-        ADD_TO_MY_LIST_OVERLAY = "id:org.wikipedia:id/onboarding_button",
-        MY_LIST_NAME_INPUT = "id:org.wikipedia:id/text_input",
-        MY_LIST_OK_BUTTON = "xpath://android.widget.Button[@text='OK']",
-        EXISTING_LIST_TPL = "xpath://*[@resource-id='org.wikipedia:id/list_of_lists']//*[@text='{SUBSTRING}']",
-        CLOSE_ARTICLE_BUTTON = "xpath://android.widget.ImageButton[@content-desc='Navigate up']";
+abstract public class ArticlePageObject extends MainPageObject
+{
+    protected static String
+        TITLE,
+        SUBTITLE,
+        FOOTER_ELEMENT,
+        OPTIONS_BUTTON,
+        OPTIONS_ADD_TO_MY_LIST_BUTTON,
+        ADD_TO_MY_LIST_OVERLAY,
+        MY_LIST_NAME_INPUT,
+        MY_LIST_OK_BUTTON,
+        EXISTING_LIST_TPL,
+        CLOSE_ARTICLE_BUTTON;
 
     public ArticlePageObject(AppiumDriver driver)
     {
@@ -26,6 +28,14 @@ public class ArticlePageObject extends MainPageObject {
     {
         return EXISTING_LIST_TPL.replace("{SUBSTRING}", list_name);
     }
+    private static String getPageTitle(String title)
+    {
+        return TITLE.replace("{SUBSTRING}",title);
+    }
+    private static String getPageSubtitle(String subtitle)
+    {
+        return SUBTITLE.replace("{SUBSTRING}", subtitle);
+    }
     /* TEMPLATES METHODS */
 
     public WebElement waitForTitleElement()
@@ -33,10 +43,19 @@ public class ArticlePageObject extends MainPageObject {
         return this.waitForElementPresent(TITLE, "Cannot find article title on page", 20);
     }
 
+    public WebElement waitForKnownTitleElement(String title)
+    {
+        return this.waitForElementPresent(getPageTitle(title), "Cannot find known article title on page", 20);
+    }
     public String getArticleTitle()
     {
         WebElement title_element = waitForTitleElement();
-        return title_element.getAttribute("text");
+        if(Platform.getInstance().isAndroid()) {
+            return title_element.getAttribute("text");
+        }
+        else {
+            return title_element.getAttribute("name");
+        }
     }
 
     public void assertArticleTitle()
@@ -46,26 +65,33 @@ public class ArticlePageObject extends MainPageObject {
 
     public void swipeToFooter()
     {
-        this.swipeUpToFindElement(
-                FOOTER_ELEMENT,
-                "Cannot find the end of Article",
-                20
-        );
+        if(Platform.getInstance().isIOS()){
+            this.swipeTillElementAppear(FOOTER_ELEMENT,"Cannot find the end of Article", 40);
+        } else{
+            this.swipeUpToFindElement(
+                    FOOTER_ELEMENT,
+                    "Cannot find the end of Article",
+                    40
+            );
+        }
     }
 
-    public void addArticleToNewList(String name_of_folder)
-    {
+    public void addArticleToNewList(String name_of_folder) throws InterruptedException {
         this.waitForElementAndClick(
                 OPTIONS_BUTTON,
                 "Can't find article to open article options",
                 5
         );
 
+        Thread.sleep(15000);
+
         this.waitForElementAndClick(
                 OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find option to add article to reading list",
                 5
         );
+
+        Thread.sleep(3000);
 
         this.waitForElementAndClick(
                 ADD_TO_MY_LIST_OVERLAY,
@@ -100,13 +126,15 @@ public class ArticlePageObject extends MainPageObject {
                 5
         );
 
-        Thread.sleep(10000);
+        Thread.sleep(15000);
 
         this.waitForElementAndClick(
                 OPTIONS_ADD_TO_MY_LIST_BUTTON,
                 "Cannot find option to add article to reading list",
                 5
         );
+
+        Thread.sleep(3000);
 
         String element = getExistingListXpath(list_name);
 
