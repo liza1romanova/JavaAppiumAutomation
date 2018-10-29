@@ -117,4 +117,29 @@ public class SearchTests extends CoreTestCase {
         SearchPageObject.waitForElementByTitleAndDescription("Python (programming language)","General-purpose, high-level programming language");
 
     }
+
+    @Test
+    public void testResultsValidation()
+    {
+        SearchPageObject SearchPageObject = SearchPageObjectFactory.get(driver);
+        SearchPageObject.initSearchInput();
+        String search_line = "Python";
+        SearchPageObject.typeSearchLine(search_line);
+        int amount_of_search_results = SearchPageObject.getAmountOfFoundArticles();
+        assertTrue(
+                "We found less than 3 search results",
+                amount_of_search_results > 3
+        );
+
+        List<WebElement> results = SearchPageObject.findAllResultsTitles();
+
+        for(WebElement result : results) {
+            String text = result.getAttribute("name");
+            boolean text_found = text.contains("Python");
+            assertTrue(
+                    "Result " + text + " doesn't match the request",
+                    text_found
+            );
+        }
+    }
 }
